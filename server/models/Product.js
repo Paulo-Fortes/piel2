@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const productSchema = new mongoose.Schema(
     {
@@ -46,7 +46,7 @@ const productSchema = new mongoose.Schema(
             required: true,
         },
         stripeId: {
-            type: String,
+            type: String,      
         },
     },
     {timestamps: true}

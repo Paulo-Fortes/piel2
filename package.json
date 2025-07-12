@@ -4,7 +4,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "server": "node server/index.js"
+    "server": "node server/index.js",
+    "client": "npm run start --prefix client",
+    "app": "concurrently npm \"npm run server\" \"npm run client\""
   },
   "keywords": [],
   "author": "",
@@ -18,7 +20,6 @@
     "express": "^5.1.0",
     "express-async-handler": "^1.2.0",
     "jsonwebtoken": "^9.0.2",
-    "jwt-decode": "^4.0.0",
     "mongoose": "^8.16.2",
     "nodemailer": "^7.0.5",
     "stripe": "^18.3.0"
