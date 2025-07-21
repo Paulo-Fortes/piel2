@@ -1,20 +1,24 @@
 import {Box, Image, Text, Badge, Flex, IconButton, Skeleton } from '@chakra-ui/react';
 import {BiExpand} from 'react-icons/bi';
-import React from 'react';
+import React, {useState } from 'react';
 import {addToFavorites, removeFromFavorites} from '../redux/actions/productActions';
 import {useSelector, useDispatch} from 'react-redux';
 import {MdOutlineFavorite, MdOutlineFavoriteBorder} from 'react-icons/md';
 import '@fontsource-variable/montserrat';
+import { Link as ReactLink } from 'react-router-dom';
+
 
 
 const ProductCard = ({product, loading}) => {
     const dispatch = useDispatch();
     const {favorites} = useSelector((state) => state.product);
 
+    const [isShown, setIsShown] = useState(false);
+
 
 
     return (
-        <Skeleton isLoaded={!loading} _hover={{size: 1.5}}>
+        <Skeleton isLoaded={!loading} mt='20'>
             <Box
                 _hover={{transform: 'scale(1.1)', transitionDuration: '0.3s'}}
                 borderWidth='1px'
@@ -26,7 +30,9 @@ const ProductCard = ({product, loading}) => {
                 shadow='md'
                 borderColor='gray.300'>
                     <Image 
-                        src={product.images[0]} 
+                        onMouseEnter={() => setIsShown(true)}
+                        onMouseLeave={() => setIsShown(false)}
+                        src={product.images[isShown && product.images.lenght === 2 ? 1 : 0]} 
                         fallbackSrc='https://via.placeholder.com/150' 
                         alt={product.name} 
                         height='200px' 
@@ -99,8 +105,9 @@ const ProductCard = ({product, loading}) => {
                         />                        
                     )} 
                     <IconButton 
-                        icon={<BiExpand size='20'/>} 
-                        /*colorScheme='yellow'*/ 
+                        icon={<BiExpand size='20'/>}                         
+                        as={ReactLink} 
+                        to={`/product/${product._id}`}
                         color='#886128'
                         backgroundColor='#FFF4E5' 
                         size='md' 

@@ -17,7 +17,7 @@ app.use('/api/products', productRoutes);
 const port = 5000;
 
 app.get('/', (req,res) => {
-    res.send('Api is running...');
+    res.send('La API está corriendo...');
 });
 
 

@@ -20,7 +20,18 @@ const getProducts = async (req, res) => {
 	}
 };
 
+const getProduct = async (req, res) => {
+	const product = await Product.findById(req.params.id);
+	if (product) {
+		res.json(product);		
+	} else {
+		res.status(404);
+		throw  new Error ('Producto no encontrado');		
+	}
+};
+
 productRoutes.route('/:page/:perPage').get(getProducts);
 productRoutes.route('/').get(getProducts);
+productRoutes.route('/:id').get(getProduct);
 
 export default productRoutes;
