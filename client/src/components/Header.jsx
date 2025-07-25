@@ -21,6 +21,7 @@ import ColorModeToggle from './ColorModeToggle';
 import { BiUserCheck } from 'react-icons/bi';
 import { RxHamburgerMenu } from "react-icons/rx";
 import { IoClose } from "react-icons/io5";
+import { TbShoppingCart } from 'react-icons/tb';
 
 const Links = [
 	{name: 'Productos', route:'/products'},
@@ -33,6 +34,7 @@ const Header = () => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const dispatch = useDispatch();
 	const { favoritesToggled } = useSelector((state) => state.product);
+	const {cartItems} = useSelector((state) => state.cart);
 
 	useEffect(() => {}, [favoritesToggled, dispatch]);
 
@@ -47,6 +49,19 @@ const Header = () => {
 						icon={isOpen ? <IoClose/> : <RxHamburgerMenu/>}
 						onClick={isOpen ? onClose : onOpen}
 						/>
+						<IconButton 
+							ml='12' 
+							position='absolute'							
+							icon={<TbShoppingCart size='20px' />} 
+							as={ReactLink} 
+							to='/cart' 
+							variant='ghost' 
+						/>
+						{cartItems.lenght > 0 && (
+							<Text fontWeight='bold' fontStyle='italic' position='absolute' ml='74px' mt='-6' fontSize='sm'>
+								{cartItems.lenght}
+							</Text>
+						)}
 				</Flex>
 				<HStack spacing='8' alignItems='center' >
 					<Box alignItems='center' display='flex' as={ReactLink} to='/'>
@@ -56,23 +71,45 @@ const Header = () => {
 					<HStack as='nav' spacing='4' display={{base: 'none', md:'flex'}}>
 						{Links.map((link)=> (
 							<NavLink route={link.route} key={link.route}>
-								<Text fontWeight='medium'>
+								<Text fontWeight='medium' color={mode('#96634E', '#FFF4E5')}>
 									{link.name}
 								</Text>
 							</NavLink>
 						))}
-						<ColorModeToggle />
+						<Box>
+							<IconButton 
+							icon={<TbShoppingCart size='20px' />} 
+							as={ReactLink} 
+							to='/cart' 
+							variant='ghost'
+							color={mode('#96634E', '#FFF4E5')}
+							/>
+						{cartItems.lenght > 0 && (
+							<Text 
+								fontWeight='bold' 
+								fontStyle='italic' 
+								position='absolute' 
+								ml='26px' 
+								mt='-6' 
+								fontSize='sm'>
+									{cartItems.lenght}
+							</Text>
+						)}
+						</Box>
+						<ColorModeToggle  />
 						{favoritesToggled ? (
 							<IconButton
 								onClick={() => dispatch(toggleFavorites(false))}
 								icon={<MdOutlineFavorite size='20px' />}
 								variant='ghost'
+								color={mode('#96634E', '#FFF4E5')}
 							/>
 						) : (
 							<IconButton
 								onClick={() => dispatch(toggleFavorites(true))}
 								icon={<MdOutlineFavoriteBorder size='20px' />}
 								variant='ghost'
+								color={mode('#96634E', '#FFF4E5')}
 							/>
 						)}						
 					</HStack>

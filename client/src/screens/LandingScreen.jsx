@@ -8,12 +8,12 @@ import {
     Link, 
     Skeleton, 
     Stack, 
-    useColorModeValue as mode, 
-    Text, 
+    useColorModeValue as mode,
 } from "@chakra-ui/react";
-import {FaArrowRight} from 'react-icons/fa';
+import {FaArrowLeft, FaArrowRight} from 'react-icons/fa';
 import {Link as ReactLink} from 'react-router-dom';
-import { AiOutlineExperiment } from "react-icons/ai";
+import '@fontsource-variable/montserrat';
+
 
 const LandingScreen = () => (
     <Box maxW='8x1' mx='auto' p={{base: '0', lg: '12'}} minH='6x1'>
@@ -27,23 +27,18 @@ const LandingScreen = () => (
                 py={{ base: '6', md:'8', lg: '12' }}
                 rounded='3xl'
             >
-                <Stack spacing={{base: '8', lg: '10'}}>
-                    <Stack spacing={{ base: '3', lg: '5'}}>
-                        <Flex alignItems='center' mb='10px'>
-                            <Icon as={AiOutlineExperiment} h={12} w={12} mr='4' color='#c68642' />                                                        
-                            <Text fontSize='4xl' fontWeight='normal' color={'#c68642'}>
-                                piel
-                            </Text>
-                        </Flex>
+                <Stack spacing={{base: '8', lg: '10'}} alignItems='center'>
+                    <Stack spacing={{ base: '3', lg: '5'}} mt='40%'>  
                         <Heading size='lg' fontWeight='light' color={mode('#96634E', '#FFF4E5')}>
-                            La belleza de una piel sana.
+                            Tu piel saludable.
                         </Heading>
                     </Stack>
                     <HStack spacing='3'>
-                        <Link as={ReactLink} to='/products' color={mode('#96634E','#FFF4E5')} fontWeight='normal' fontSize='2xl'>
-                            Click y descubra como
-                        </Link>
                         <Icon color={mode('#96634E', '#FFF4E5')} as={FaArrowRight}/>
+                        <Link as={ReactLink} to='/products' color={mode('#96634E','#FFF4E5')} fontWeight='semi-bold' fontSize='xl'>
+                            Click aquí y descubra como
+                        </Link>
+                        <Icon color={mode('#96634E', '#FFF4E5')} as={FaArrowLeft}/>
                     </HStack>
                 </Stack>
             </Box>

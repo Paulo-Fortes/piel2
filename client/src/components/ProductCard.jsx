@@ -1,4 +1,4 @@
-import {Box, Image, Text, Badge, Flex, IconButton, Skeleton } from '@chakra-ui/react';
+import {Box, Image, Text, Badge, Flex, IconButton, Skeleton, useToast, Tooltip } from '@chakra-ui/react';
 import {BiExpand} from 'react-icons/bi';
 import React, {useState } from 'react';
 import {addToFavorites, removeFromFavorites} from '../redux/actions/productActions';
@@ -6,16 +6,39 @@ import {useSelector, useDispatch} from 'react-redux';
 import {MdOutlineFavorite, MdOutlineFavoriteBorder} from 'react-icons/md';
 import '@fontsource-variable/montserrat';
 import { Link as ReactLink } from 'react-router-dom';
-
+import {addCartItem} from '../redux/actions/cartActions';
+import { useEffect } from 'react';
+import {TbShoppingCartPlus} from 'react-icons/tb';
 
 
 const ProductCard = ({product, loading}) => {
     const dispatch = useDispatch();
     const {favorites} = useSelector((state) => state.product);
-
     const [isShown, setIsShown] = useState(false);
+    const { cartItems } = useSelector((state) => state.cart);
+    const toast = useToast();
+    const [cartPlusDisabled, setCartPlusDisabled] = useState(false);
 
+useEffect(() => {
+    const item = cartItems.find((cartItem) => cartItem.id === product._id);
+    if(item && item.qty === product.stock){
+        setCartPlusDisabled(true);
+    }
+}, [product, cartItems]);
 
+const addItem = (id) => {
+		if (cartItems.some((cartItem) => cartItem.id === id)) {
+			const item = cartItems.find((cartItem) => cartItem.id === id);
+			dispatch(addCartItem(id, item.qty + 1));
+		} else {
+			dispatch(addCartItem(id, 1));
+		}
+		toast({
+			description: 'El producto fue agregado.',
+			status: 'success',
+			isClosable: true,
+		});
+	};
 
     return (
         <Skeleton isLoaded={!loading} mt='20'>
@@ -84,26 +107,7 @@ const ProductCard = ({product, loading}) => {
                     </Badge>                
                 </Flex>
                 <Flex justify='space-between' mt='2'>
-                    {favorites.includes(product._id) ? (
-                        <IconButton
-                            icon={<MdOutlineFavorite size='20px' />}
-                            colorScheme='red'
-                            boxShadow='inner'
-                            size='md'
-                            isRound={true}
-                            onClick={() => dispatch(removeFromFavorites(product._id))}
-                        />
-                    ):(
-                        <IconButton
-                            icon={<MdOutlineFavoriteBorder size='20px' />}
-                            color='#886128'
-                            backgroundColor='#FFF4E5'
-                            size='md'
-                            boxShadow='inner'
-                            isRound={true}
-                            onClick={() => dispatch(addToFavorites(product._id))}
-                        />                        
-                    )} 
+                    
                     <IconButton 
                         icon={<BiExpand size='20'/>}                         
                         as={ReactLink} 
@@ -112,7 +116,52 @@ const ProductCard = ({product, loading}) => {
                         backgroundColor='#FFF4E5' 
                         size='md' 
                         isRound={true} 
-                        shadow='inner' />
+                        shadow='inner' 
+                        />
+                    
+                    {favorites.includes(product._id) ? (
+                    <IconButton
+                        icon={<MdOutlineFavorite size='20px' />}
+                        colorScheme='red'
+                        boxShadow='inner'
+                        size='md'
+                        isRound={true}
+                        onClick={() => dispatch(removeFromFavorites(product._id))}
+                    />
+                ):(
+                    <IconButton
+                        icon={<MdOutlineFavoriteBorder size='20px' />}
+                        color='#886128'
+                        backgroundColor='#FFF4E5'
+                        size='md'
+                        boxShadow='inner'
+                        isRound={true}
+                        onClick={() => dispatch(addToFavorites(product._id))}
+                    />                       
+                    )} 
+
+                        <Tooltip 
+                            isDisabled={!cartPlusDisabled} 
+                            hasArrow 
+                            label={
+                                !cartPlusDisabled 
+                                    ? 'Usted ha alcanzado la cantidad máxima del producto.' 
+                                    : product.stock <= 0
+                                    ? 'Se ha agotado'
+                                    : ''
+                                }>
+                                <IconButton 
+                                    isDisabled={product.stock <= 0 || cartPlusDisabled}
+                                    onClick={() => addItem(product._id)}
+                                    icon={<TbShoppingCartPlus size='20'/>}
+                                    color='#886128'
+                                    backgroundColor='#FFF4E5'
+                                    size='md'
+                                    boxShadow='md'
+                                    isRound={true}
+                                />
+                            
+                        </Tooltip>                    
                 </Flex>                
             </Box>
         </Skeleton>

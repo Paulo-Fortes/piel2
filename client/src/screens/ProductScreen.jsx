@@ -16,6 +16,7 @@ import {
 	Spinner,
 	Stack,
 	useColorModeValue as mode,
+	useToast,
 	Text,
 	Wrap,
 } from '@chakra-ui/react';
@@ -26,12 +27,15 @@ import { getProduct } from '../redux/actions/productActions';
 import { useEffect, useState } from 'react';
 import Star from '../components/Star';
 import "@fontsource/montserrat";
+import { addCartItem } from "../redux/actions/cartActions";
 
 const ProductScreen = () => {
 	const [amount, setAmount] = useState(1);
 	const { id } = useParams();
 	const dispatch = useDispatch();
 	const { loading, error, product } = useSelector((state) => state.product);
+	const { cartItems } = useSelector((state) => state.cart);
+	const toast = useToast();
 
 	useEffect(() => {
 		dispatch(getProduct(id));
@@ -46,6 +50,22 @@ const ProductScreen = () => {
 		}
 	};
 
+const addItem = () => {
+	if (cartItems.some((cartItem) => cartItem.id === id)) {
+		cartItems.find((cartItem) => cartItem.id === id);
+		dispatch(addCartItem(id,amount));		
+	} else {
+		dispatch(addCartItem(id,amount));
+	}
+	toast({
+		description: 'El item fue agregado',
+		status: 'sucess',
+		isCloasable: true,
+	});
+};
+	
+
+
 	return (
 		<Wrap spacing='30px' justify='center' minHeight='100vh'>
 			{loading ? (
@@ -55,7 +75,7 @@ const ProductScreen = () => {
 			) : error ? (
 				<Alert status='error'>
 					<AlertIcon />
-					<AlertTitle>We are sorry!</AlertTitle>
+					<AlertTitle>Perdónanos!</AlertTitle>
 					<AlertDescription>{error}</AlertDescription>
 				</Alert>
 			) : (
@@ -68,13 +88,13 @@ const ProductScreen = () => {
 						<Stack direction={{ base: 'column', lg: 'row' }} align='flex-start'backgroundColor={mode('#FFF4E5','gray.600')} p='10' rounded='3xl'>
 							<Stack pr={{ base: '0', md: 'row' }} flex='1.5' mb={{ base: '12', md: 'none' }}>
 								{product.productIsNew && (
-									<Badge p='2' rounded='md' w='50px' fontSize='0.8em' colorScheme='green'>
-										New
+									<Badge p='1' rounded='md' w='50px' fontSize='0.8em' colorScheme='green'>
+										Nuevo
 									</Badge>
 								)}
 								{product.stock === 0 && (
 									<Badge rounded='full' w='70px' fontSize='0.8em' colorScheme='red'>
-										sold out
+										Agotado
 									</Badge>
 								)}
 								<Heading fontSize='2xl' fontWeight='extrabold' color={mode('#96634E','#FFF4E5')} fontFamily='' >
@@ -108,15 +128,18 @@ const ProductScreen = () => {
 											<RiAddFill />
 										</Button>
 									</Flex>
-									<Badge fontSize='lg' width='170px' textAlign='center' colorScheme='yellow' color={mode('#96634E','#FFF4E5')}>
-										In Stock: {product.stock}
+									<Badge fontSize='lg' width='220px' textAlign='center' colorScheme='yellow' color={mode('#96634E','#FFF4E5')}>
+										Cantidad en stock: {product.stock}
 									</Badge>
-									<Button variant='outline' isDisabled={product.stock === 0} colorScheme='yellow' onClick={() => {}}>
+									<Button variant='outline' isDisabled={product.stock === 0} colorScheme='yellow' onClick={() => addItem()}>
 										Agregar al carrito
 									</Button>
 									<Stack width='270px'>
 										<Flex alignItems='center'>
 											<BiPackage size='20px' color={mode('#96634E','#FFF4E5')}/>
+											<Text fontWeight='medium' fontSize='sm' ml='2'color={mode('#96634E','#FFF4E5')}>
+												Envíos desde C.A.B.A. al mundo.
+											</Text>
 										</Flex>
 										<Flex alignItems='center'>
 											<BiCheckShield size='20px' color={mode('#96634E','#FFF4E5')}/>
@@ -166,7 +189,7 @@ const ProductScreen = () => {
 											</Text>
 										</Flex>
 										<Box py='12px'>{review.comment}</Box>
-										<Text fontSize='sm' color='gray.400'>
+										<Text fontSize='sm' color={mode('#96634E','#FFF4E5')}>
 											by {review.name}, {new Date(review.createdAt).toDateString()}
 										</Text>
 									</Box>
