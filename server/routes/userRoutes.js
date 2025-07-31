@@ -4,6 +4,7 @@ import asyncHandler from 'express-async-handler';
 import jwt from 'jsonwebtoken';
 import { sendVerificationEmail } from '../middleware/sendVerificationEmail.js';
 import {sendPasswordResetEmail} from '../middleware/sendPasswordResetEmail.js';
+import { protectRoute } from '../middleware/authMiddleware.js';
 
 const userRoutes = express.Router()
 
@@ -74,22 +75,11 @@ const registerUser = asyncHandler(async (req,res) => {
 })
 
 //verificacion de e-mail
-const verifyEmail = asyncHandler (async (req, res) => {
-    const token = req.headers.authorization.split('')[1]
-    try {
-        const decoded = jwt.verify(token, process.env.TOKEN_SECRET)
-        const user = await User.findById(decoded.id);
-        
-        if(user) {
-            user.active = true;
-            await user.save();
-            res.json('Gracias por activar tu cuenta. Ya podés cerrar esta ventana.');
-        } else {
-            res.status(404).send('Usuario no encontrado.');
-        }
-    } catch (error) {
-        res.status(401).send('Dirección de e-mail no pudo ser verificada.');                
-    }
+const verifyEmail = asyncHandler(async (req, res) => {
+	const user = req.user;
+	user.active = true;
+	await user.save();
+	res.json('Gracias por activar tu cuenta. Ya podés cerrar esta ventana.');
 });
 
 //requisito de reseteo de contraseña
