@@ -37,6 +37,8 @@ import { MdOutlineAdminPanelSettings } from 'react-icons/md';
 import { AiOutlineExperiment } from 'react-icons/ai';
 import { RxHamburgerMenu } from "react-icons/rx";
 import { IoClose, IoChevronDown } from "react-icons/io5";
+import { FcGoogle } from 'react-icons/fc';
+import { googleLogout } from '@react-oauth/google';
 
 const Links = [
 	{ name: 'Productos', route: '/products' },
@@ -61,6 +63,7 @@ const Header = () => {
 	}, [favoritesToggled, dispatch, userInfo]);
 
 	const logoutHandler = () => {
+		googleLogout()
 		dispatch(logout());
 		toast({
 			description: 'Encerraste la sesión.',
@@ -136,15 +139,25 @@ const Header = () => {
 							<Menu>
 								<MenuButton rounded='full' variant='link' cursor='pointer' minW='0' >
 									<HStack>
-										<BiUserCheck size='30' />
+										{userInfo.googleImage ? (
+											<Image
+												borderRadius='full'
+												boxSize='40px'
+												src={userInfo.googleImage}
+												referrerPolicy='no-referrer'
+											/>
+										) : (
+											<BiUserCheck size='30' />
+										)}
 										<IoChevronDown color={mode('#96634E', '#FFF4E5')}/>
 									</HStack>
 								</MenuButton>
 								<MenuList>
 									<HStack>
-										<Text pl='3' as='i'>
+										<Text pl='3' as='i' >
 											{userInfo.email}
 										</Text>
+										{userInfo.googleId && <FcGoogle />}
 									</HStack>
 									<Divider py='1' />
 									<MenuItem as={ReactLink} to='/order-history'>
