@@ -80,13 +80,13 @@ const Header = () => {
 						<IconButton
 							bg='parent'
 							size='md'
-							icon={isOpen ? <IoClose/> : <RxHamburgerMenu />}
+							icon={isOpen ? <IoClose color='#c68642'/> : <RxHamburgerMenu color='#c68642'/>}
 							onClick={isOpen ? onClose : onOpen}
 						/>
 						<IconButton
 							ml='12'
 							position='absolute'
-							icon={<TbShoppingCart size='20px' />}
+							icon={<TbShoppingCart size='20px' color={mode('#96634E', '#FFF4E5')}/>}
 							as={ReactLink}
 							to='/cart'
 							variant='ghost'
@@ -200,20 +200,20 @@ const Header = () => {
 							<Stack as='nav' spacing='4'>
 								{Links.map((link) => (
 									<NavLink route={link.route} key={link.route}>
-										<Text fontWeight='medium'>{link.name}</Text>
+										<Text fontWeight='medium' color={mode('#96634E', '#FFF4E5')}>{link.name}</Text>
 									</NavLink>
 								))}
 							</Stack>
 							{favoritesToggled ? (
 								<IconButton
 									onClick={() => dispatch(toggleFavorites(false))}
-									icon={<MdOutlineFavorite size='20px' />}
+									icon={<MdOutlineFavorite size='20px' color={mode('#96634E', '#FFF4E5')}/>}
 									variant='ghost'
 								/>
 							) : (
 								<IconButton
 									onClick={() => dispatch(toggleFavorites(true))}
-									icon={<MdOutlineFavoriteBorder size='20px' />}
+									icon={<MdOutlineFavoriteBorder size='20px' color={mode('#96634E', '#FFF4E5')}/>}
 									variant='ghost'
 								/>
 							)}

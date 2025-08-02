@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { Link as ReactLink} from 'react-router-dom';
 
 
-const OrderSummary = () => {
+const OrderSummary = ({ checkoutSreen = false }) => {
   const {subtotal, shipping} = useSelector((state) => state.cart);
 
   return (
@@ -37,8 +37,16 @@ const OrderSummary = () => {
         <Text fontWeight='medium' color={mode('#96634E', '#FFF4E5')}>${Number(subtotal) + Number(shipping)}</Text>        
       </Flex>
     </Stack>
-    <Button as={ReactLink} to='/checkout' mt='15%' colorScheme='yellow' size='lg' textColor={mode('#6a3f2cff', '#FFF4E5')} rightIcon={<FaArrowRight/>}>
-      Comprar
+    <Button
+      hidden={checkoutSreen}
+      as={ReactLink} 
+      to='/checkout' 
+      mt='15%' 
+      colorScheme='yellow' 
+      size='lg' 
+      textColor={mode('#6a3f2cff', '#FFF4E5')} 
+      rightIcon={<FaArrowRight/>}>
+        Comprar
     </Button>
 
     </Stack>

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import {
-	/* setUserOrders, */
+	setUserOrders,
 	setError,
 	setLoading,
 	setServerResponseStatus,
@@ -154,6 +154,31 @@ export const googleLogin = (googleId, email, name, googleImage) => async (dispat
 					: error.message
 					? error.message
 					: 'Ha ocurrido un error inesperado. Por favor, intente luego.'
+			)
+		);
+	}
+};
+
+export const getUserOrders = () => async (dispatch, getState) => {
+	dispatch(setLoading(true));
+
+	const {
+		user: { userInfo },
+	} = getState();
+
+	try {
+		const config = { headers: { Authorization: `Bearer ${userInfo.token}`, 'Content-Type': 'application/json' } };
+
+		const { data } = await axios.get(`/api/users/${userInfo._id}`, config);
+		dispatch(setUserOrders(data));
+	} catch (error) {
+		dispatch(
+			setError(
+				error.response && error.response.data.message
+					? error.response.data.message
+					: error.message
+					? error.message
+					: 'Ha ocurrido un error inesperado. Por favor, intente de nuevo luego.'
 			)
 		);
 	}

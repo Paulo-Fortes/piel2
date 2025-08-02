@@ -73,9 +73,9 @@ const Footer = () => (
 					&copy; {new Date().getFullYear()} Piel, Inc. Todos los derechos reservados.
 				</Text>
 				<ButtonGroup variant='ghost' >
-					<IconButton as='a' href='#' icon={<FaLinkedin fontSize='1.25rem' />} color={mode('#96634E', '#FFF4E5')} />
-					<IconButton as='a' href='#' icon={<FaGithub fontSize='1.25rem' />} color={mode('#96634E', '#FFF4E5')} />
-					<IconButton as='a' href='#' icon={<FaFacebook fontSize='1.25rem' />} color={mode('#96634E', '#FFF4E5')} />
+					<IconButton as='a' href='https://www.linkedin.com/in/paulorobertoroco/' icon={<FaLinkedin fontSize='1.25rem' />} color={mode('#96634E', '#FFF4E5')} />
+					<IconButton as='a' href='https://github.com/Paulo-Fortes/piel2' icon={<FaGithub fontSize='1.25rem' />} color={mode('#96634E', '#FFF4E5')} />
+					<IconButton as='a' href='https://www.facebook.com/paulorobertoroco?locale=es_LA' icon={<FaFacebook fontSize='1.25rem' />} color={mode('#96634E', '#FFF4E5')} />
 				</ButtonGroup>
 			</Stack>
 		</Container>

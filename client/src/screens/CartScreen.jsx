@@ -34,7 +34,7 @@ return (
 			) : error ? (
 				<Alert status='error'>
 					<AlertIcon />
-					<AlertTitle>We are sorry!</AlertTitle>
+					<AlertTitle>Perdonános!</AlertTitle>
 					<AlertDescription>{error}</AlertDescription>
 				</Alert>
 			) : cartItems.length <= 0 ? (
