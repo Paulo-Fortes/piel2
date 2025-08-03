@@ -11,7 +11,7 @@ const OrderSummary = ({ checkoutSreen = false }) => {
     <Stack
       minWidth='300px'
       spacing='1px'
-      borderColor={mode('cyan.500', 'cyan.100')}
+      borderColor={mode('yellow.500', 'yellow.100')}
       rounded='lg'
       padding='8'
       w='full'

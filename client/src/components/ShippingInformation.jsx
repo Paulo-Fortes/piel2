@@ -6,7 +6,6 @@ import {
 	Heading,
 	Radio,
 	RadioGroup,
-	Spacer,
 	Stack,
 	Text,
 	VStack,

@@ -5,32 +5,33 @@ import {
 	AlertTitle,
 	Box,
 	Button,
-	Center,
 	Container,
 	FormControl,
 	Heading,
-	Stack,
-	Text,
-	VStack,
 	HStack,
+	Stack,
+	Text,	
 	useBreakpointValue,
 	useToast,
 } from '@chakra-ui/react';
 import { Formik } from 'formik';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link as ReactLink, useNavigate, useParams } from 'react-router-dom';
+import { Link as ReactLink, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import PasswordField from '../components/PasswordField';
-import { register, resetPassword, resetState } from '../redux/actions/userActions';
 import TextField from '../components/TextField';
+import { googleLogin, register } from '../redux/actions/userActions';
+import { useGoogleLogin } from '@react-oauth/google';
+import axios from 'axios';
+import { FcGoogle } from 'react-icons/fc';
 
 const RegistrationScreen = () => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
+	const { loading, error, userInfo } = useSelector((state) => state.user);
 	const redirect = '/products';
 	const toast = useToast();
-	const { loading, error, userInfo } = useSelector((state) => state.user);
 	const headingBR = useBreakpointValue({ base: 'xs', md: 'sm' });
 	const boxBR = useBreakpointValue({ base: 'transparent', md: 'bg-surface' });
 
@@ -44,6 +45,18 @@ const RegistrationScreen = () => {
 			});
 		}
 	}, [userInfo, redirect, error, navigate, toast]);
+
+	const handleGoogleLogin = useGoogleLogin({
+		onSuccess: async (response) => {
+			const userInfo = await axios
+				.get('https://www.googleapis.com/oauth2/v3/userinfo', {
+					headers: { Authorization: `Bearer ${response.access_token}` },
+				})
+				.then((res) => res.data);
+			const { sub, email, name, picture } = userInfo;
+			dispatch(googleLogin(sub, email, name, picture));
+		},
+	});
 
 	return (
 		<Formik
@@ -110,6 +123,10 @@ const RegistrationScreen = () => {
 								<Stack spacing='6'>
 									<Button colorScheme='yellow' size='lg' fontSize='md' isLoading={loading} type='submit'>
 										Ingresar
+									</Button>
+									<Button colorScheme='yellow' size='lg' fontSize='md' onClick={() => handleGoogleLogin()}>
+										<FcGoogle size={30} px />
+										<Text px='2'>Ingresar con Google</Text>
 									</Button>
 								</Stack>
 							</Stack>

@@ -63,7 +63,7 @@ const Header = () => {
 	}, [favoritesToggled, dispatch, userInfo]);
 
 	const logoutHandler = () => {
-		googleLogout()
+		googleLogout();
 		dispatch(logout());
 		toast({
 			description: 'Encerraste la sesión.',
@@ -169,8 +169,9 @@ const Header = () => {
 									{userInfo.isAdmin && (
 										<>
 											<MenuDivider />
-											<MenuItem as={ReactLink} to='/admin-console'>
-												Consola Admin
+											<MenuItem as={ReactLink} to={'/admin-console'}>
+												<MdOutlineAdminPanelSettings />
+												<Text ml='2'>Consola Admin</Text>
 											</MenuItem>
 										</>
 									)}

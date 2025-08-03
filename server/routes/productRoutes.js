@@ -1,6 +1,6 @@
 import express from 'express';
 import Product from '../models/Product.js';
-import { protectRoute } from '../middleware/authMiddleware.js';
+import { admin, protectRoute } from '../middleware/authMiddleware.js';
 import asyncHandler from 'express-async-handler';
 import User from '../models/User.js';
 
@@ -63,7 +63,92 @@ const createProductReview = asyncHandler(async (req, res) => {
 		res.status(201).json({ message: 'Reseña realizada de manera exitosa.' });
 	} else {
 		res.status(404);
-		throw new Error('Producto no entontrado.');
+		throw new Error('Producto no encontrado.');
+	}
+});
+
+const createNewProduct = asyncHandler(async (req, res) => {
+	const { name, category, stock, price, images, productIsNew, description } = req.body;
+
+	const newProduct = await Product.create({
+		name,
+		category,
+		stock,
+		price,
+		images: images,
+		productIsNew,
+		description,
+	});
+	await newProduct.save();
+
+	const products = await Product.find({});
+
+	if (newProduct) {
+		res.json(products);
+	} else {
+		res.status(404);
+		throw new Error('No se pudo actualizar el producto.');
+	}
+});
+
+const updateProduct = asyncHandler(async (req, res) => {
+	const { name, category, stock, price, id, productIsNew, description } = req.body;
+
+	const product = await Product.findById(id);
+
+	if (product) {
+		product.name = name;
+		product.price = price;
+		product.description = description;
+		product.category = category;
+		product.stock = stock;
+		product.productIsNew = productIsNew;
+
+		await product.save();
+
+		const products = await Product.find({});
+
+		res.json(products);
+	} else {
+		res.status(404);
+		throw new Error('No se pudo encontrar el producto.');
+	}
+});
+
+const removeProductReview = asyncHandler(async (req, res) => {
+	const product = await Product.findById(req.params.productId);
+
+	const updatedReviews = product.reviews.filter((rev) => rev._id.valueOf() !== req.params.reviewId);
+
+	if (product) {
+		product.reviews = updatedReviews;
+
+		product.numberOfReviews = product.reviews.length;
+
+		if (product.numberOfReviews > 0) {
+			product.rating = product.reviews.reduce((acc, item) => item.rating + acc, 0) / product.reviews.length;
+		} else {
+			product.rating = 1;
+		}
+
+		await product.save();
+		const products = await Product.find({});
+
+		res.json({ products, pagination: {} });
+	} else {
+		res.status(404);
+		throw new Error('Producto no encontrado.');
+	}
+});
+
+const deleteProduct = asyncHandler(async (req, res) => {
+	const product = await Product.findByIdAndDelete(req.params.id);
+
+	if (product) {
+		res.json(product);
+	} else {
+		res.status(404);
+		throw new Error('Producto no encontrado.');
 	}
 });
 
@@ -71,5 +156,9 @@ productRoutes.route('/:page/:perPage').get(getProducts);
 productRoutes.route('/').get(getProducts);
 productRoutes.route('/:id').get(getProduct);
 productRoutes.route('/reviews/:id').post(protectRoute, createProductReview);
+productRoutes.route('/:id').delete(protectRoute, admin, deleteProduct);
+productRoutes.route('/').put(protectRoute, admin, updateProduct);
+productRoutes.route('/:productId/:reviewId').put(protectRoute, admin, removeProductReview);
+productRoutes.route('/').post(protectRoute, admin, createNewProduct);
 
 export default productRoutes;
