@@ -164,7 +164,7 @@ const googleLogin = asyncHandler(async (req, res) => {
 				token: genToken(newUser._id),
 				active: newUser.active,
 				createdAt: newUser.createdAt,
-			});
+			});		
 		}
 	} catch (error) {
 		res.status(404).send('Algo salió mal. Por favor intente luego.');

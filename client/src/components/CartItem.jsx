@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import {addCartItem, removeCartItem} from '../redux/actions/cartActions';
 
 const CartItem = ({cartItem}) => {
-  const { name, image, price, stock, qty, id } = cartItem;
+  const { name, image, stock, qty, id } = cartItem;
   const dispatch = useDispatch();
 
   return (
