@@ -16,7 +16,7 @@ const deleteOrder = asyncHandler(async (req, res) => {
 	if (order) {
 		res.json(order);
 	} else {
-		res.status(404);
+		res.status(404).send('No se pudo encontrar el pedido.');
 		throw new Error('No se pudo encontrar el pedido.');
 	}
 });
@@ -29,7 +29,7 @@ const setDelivered = asyncHandler(async (req, res) => {
 		const updatedOrder = await order.save();
 		res.json(updatedOrder);
 	} else {
-		res.status(404);
+		res.status(404).send('No se pudo actualizar el pedido.');
 		throw new Error('No se pudo actualizar el pedido.');
 	}
 });

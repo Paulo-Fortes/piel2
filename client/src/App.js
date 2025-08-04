@@ -1,4 +1,4 @@
-import { ChakraProvider } from '@chakra-ui/react';
+import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 import ProductsScreen from './screens/ProductsScreen';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import Header from './components/Header';
@@ -21,6 +21,15 @@ import SuccessScreen from './screens/SucessScreen';
 import AdminConsoleScreen from './screens/AdminConsoleScreen';
 
 function App() {
+	const theme = extendTheme({
+		styles: {
+			global: (props) => ({
+				body: {
+					bg: props.colorMode === 'light' && '#F7FAFC',
+				},
+			}),
+		},
+	});
 	const [googleClient, setGoogleClient] = useState(null);
 	useEffect(() => {
 		const googleKey = async () => {
@@ -31,7 +40,7 @@ function App() {
 	}, [googleClient]);
 
 	return (
-		<ChakraProvider>
+		<ChakraProvider theme={theme}>
 			{!googleClient ? (
 				<VStack pt='37vh'>
 					<Spinner mt='20' thickness='2px' speed='0.65s' emptyColor='gray.200' color='yellow.500' size='xl' />

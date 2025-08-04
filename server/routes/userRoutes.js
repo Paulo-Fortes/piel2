@@ -176,7 +176,7 @@ const getUserOrders = asyncHandler(async (req, res) => {
 	if (orders) {
 		res.json(orders);
 	} else {
-		res.status(404);
+		res.status(404).send('No fue encontrado ningún pedido.');
 		throw new Error('No fue encontrado ningún pedido.');
 	}
 });
@@ -191,7 +191,7 @@ const deleteUser = asyncHandler(async (req, res) => {
 		const user = await User.findByIdAndRemove(req.params.id);
 		res.json(user);
 	} catch (error) {
-		res.status(404);
+		res.status(404).send('No fue posible encontrar el usuario.');
 		throw new Error('No fue posible encontrar el usuario.');
 	}
 });

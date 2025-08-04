@@ -1,6 +1,6 @@
 import express from 'express';
 import Product from '../models/Product.js';
-import { admin, protectRoute } from '../middleware/authMiddleware.js';
+import { protectRoute, admin } from '../middleware/authMiddleware.js';
 import asyncHandler from 'express-async-handler';
 import User from '../models/User.js';
 
@@ -14,10 +14,10 @@ const getProducts = async (req, res) => {
 
 	if (page && perPage) {
 		const totalPages = Math.ceil(products.length / perPage);
-		const startIndex = (page-1) * perPage;
+		const startIndex = (page - 1) * perPage;
 		const endIndex = startIndex + perPage;
 		const paginatedProducts = products.slice(startIndex, endIndex);
-		res.json({products: paginatedProducts, pagination: { currentPage: page, totalPages } });
+		res.json({ products: paginatedProducts, pagination: { currentPage: page, totalPages } });
 	} else {
 		res.json({ products, pagination: {} });
 	}
@@ -25,11 +25,12 @@ const getProducts = async (req, res) => {
 
 const getProduct = async (req, res) => {
 	const product = await Product.findById(req.params.id);
+
 	if (product) {
-		res.json(product);		
+		res.json(product);
 	} else {
-		res.status(404);
-		throw  new Error ('Producto no encontrado');		
+		res.status(404).send('Producto no encontrado.');
+		throw new Error('Producto no encontrado.');
 	}
 };
 
@@ -43,7 +44,7 @@ const createProductReview = asyncHandler(async (req, res) => {
 		const alreadyReviewed = product.reviews.find((review) => review.user.toString() === user._id.toString());
 
 		if (alreadyReviewed) {
-			res.status(400);
+			res.status(400).send('Ya hiciste una reseña de este producto.');
 			throw new Error('Ya hiciste una reseña de este producto.');
 		}
 
@@ -62,7 +63,7 @@ const createProductReview = asyncHandler(async (req, res) => {
 		await product.save();
 		res.status(201).json({ message: 'Reseña realizada de manera exitosa.' });
 	} else {
-		res.status(404);
+		res.status(404).send('Producto no encontrado.');
 		throw new Error('Producto no encontrado.');
 	}
 });
@@ -86,8 +87,8 @@ const createNewProduct = asyncHandler(async (req, res) => {
 	if (newProduct) {
 		res.json(products);
 	} else {
-		res.status(404);
-		throw new Error('No se pudo actualizar el producto.');
+		res.status(404).send('No fue posible actualizar el producto.');
+		throw new Error('No fue posible actualizar el producto.');
 	}
 });
 
@@ -110,7 +111,7 @@ const updateProduct = asyncHandler(async (req, res) => {
 
 		res.json(products);
 	} else {
-		res.status(404);
+		res.status(404).send('No se pudo encontrar el producto.');
 		throw new Error('No se pudo encontrar el producto.');
 	}
 });
@@ -136,7 +137,7 @@ const removeProductReview = asyncHandler(async (req, res) => {
 
 		res.json({ products, pagination: {} });
 	} else {
-		res.status(404);
+		res.status(404).send('Producto no encontrado.');
 		throw new Error('Producto no encontrado.');
 	}
 });
@@ -147,7 +148,7 @@ const deleteProduct = asyncHandler(async (req, res) => {
 	if (product) {
 		res.json(product);
 	} else {
-		res.status(404);
+		res.status(404).send('Producto no encontrado.');
 		throw new Error('Producto no encontrado.');
 	}
 });
